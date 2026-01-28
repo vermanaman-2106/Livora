@@ -131,7 +131,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       // Get existing cart ID from localStorage
       const existingCartId = localStorage.getItem("shopify_cart_id");
       
-      // Create or add to cart using Shopify Storefront API
+      // Create or add to cart using Shopify Storefront API (via our route)
       const response = await fetch("/api/cart/add", {
         method: "POST",
         headers: {
@@ -147,25 +147,25 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       if (response.ok) {
         const data = await response.json();
         
-        // Save cart ID to localStorage
+        // Save cart ID to localStorage so bag persists
         if (data.cart?.id) {
           localStorage.setItem("shopify_cart_id", data.cart.id);
         }
         
-        // Redirect to cart page
+        // Redirect to cart page (bag)
         window.location.href = "/cart";
       } else {
-        // Fallback: redirect to Shopify cart
+        // Fallback: redirect directly to Shopify cart page if API fails
         const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || "livora-5492.myshopify.com";
-        const checkoutUrl = `https://${storeDomain}/cart/${selectedVariant}:1`;
-        window.location.href = checkoutUrl;
+        const fallbackUrl = `https://${storeDomain}/cart/${selectedVariant}:1`;
+        window.location.href = fallbackUrl;
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      // Fallback: redirect to Shopify cart
+      // Fallback: redirect directly to Shopify cart page on error
       const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || "livora-5492.myshopify.com";
-      const checkoutUrl = `https://${storeDomain}/cart/${selectedVariant}:1`;
-      window.location.href = checkoutUrl;
+      const fallbackUrl = `https://${storeDomain}/cart/${selectedVariant}:1`;
+      window.location.href = fallbackUrl;
     }
   };
 
