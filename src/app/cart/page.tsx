@@ -99,6 +99,9 @@ export default function CartPage() {
       if (response.ok) {
         const data = await response.json();
         setCart(data.cart);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
       }
     } catch (error) {
       console.error("Error removing item:", error);
@@ -130,6 +133,9 @@ export default function CartPage() {
       if (response.ok) {
         const data = await response.json();
         setCart(data.cart);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
